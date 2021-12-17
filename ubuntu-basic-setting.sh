@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # useage
 # curl -fsSL https://raw.githubusercontent.com/ssokka/ubuntu/master/ubuntu-basic-setting.sh | bash
