@@ -48,8 +48,6 @@ install() {
 		echo
 	fi
 	path_exec
-	echo -e "$(timestamp) 구글 클라우드 SDK 업데이트"
-	gcloud components update --quiet &>/dev/null
 }
 
 upgrade() {
@@ -72,6 +70,7 @@ upgrade() {
 }
 
 update() {
+	return
 	echo -e "$(timestamp) 구글 클라우드 SDK 업데이트"
 	gcloud components update --quiet &>/dev/null
 }
