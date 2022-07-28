@@ -47,10 +47,10 @@ install() {
 		fi
 		echo
 	fi
-	path_exec
 }
 
 upgrade() {
+	return
 	ver=$(gcloud version | grep SDK)
 	ver=${ver:17:3}
 	if [[ $ver =~ [^0-9] ]]; then
@@ -70,7 +70,7 @@ upgrade() {
 }
 
 update() {
-	return
+	# return
 	echo -e "$(timestamp) 구글 클라우드 SDK 업데이트"
 	gcloud components update --quiet &>/dev/null
 }
@@ -335,6 +335,7 @@ echo -e "$(timestamp) 구글 서비스 계정 생성 시작"
 echo --------------------------------------------------------------------------------
 requirements
 install
+path_exec
 upgrade
 update
 auth
