@@ -25,11 +25,6 @@ requirements() {
 	fi
 }
 
-path_exec() {
-	source ${HOME}/google-cloud-sdk/completion.bash.inc &>/dev/null
-	source ${HOME}/google-cloud-sdk/path.bash.inc &>/dev/null
-}
-
 install() {
 	export PATH=$PATH:$HOME/google-cloud-sdk/bin
 	which gcloud &>/dev/null
@@ -47,6 +42,11 @@ install() {
 		fi
 		echo
 	fi
+}
+
+path_exec() {
+	source ${HOME}/google-cloud-sdk/completion.bash.inc &>/dev/null
+	source ${HOME}/google-cloud-sdk/path.bash.inc &>/dev/null
 }
 
 upgrade() {
