@@ -178,34 +178,43 @@ create_project() {
 }
 
 enable_api() {
-	gcloud config set project ${PROJECT_ID} &>/dev/null
-	code=$?
-	if [[ ${code} != 0 ]]; then
-		echo -e "$(timestamp) ! 프로젝트 ID '${PROJECT_ID}' 조회 불가"
-		exit
-	fi
-	e_apis=("drive.googleapis.com") # 필수 APIs
-	d_apis="" # 불필요 APIs
-	filter="" # 필수 APIs 제외 필터
-	tmp="" # 필수 APIs 단일 라인
-	for api in ${e_apis[@]}; do
-		tmp+="${api} "
-		filter+="NOT config.name=${api} AND "
-	done
-	filter=${filter:0:-5}
-	for api in $(gcloud services list --filter="${filter}" --format="table(NAME)" | sed 1d); do
-		d_apis+="${api} "
-	done
-	e_apis=${tmp:0:-1}
-	if [[ "${d_apis}" != "" ]]; then
-		echo -e "$(timestamp) 불필요한 API 사용 중지"
-		while read -r line; do
-			echo -e "$(timestamp) - ${line}"
-		done <<< $(gcloud services list --filter="${filter}" --format="table(TITLE)" | sed 1d)
-		gcloud services disable --force ${d_apis:0:-1} &>/dev/null
-	fi
-	echo -e "$(timestamp) 구글 드라이브 API 사용"
-	gcloud services enable ${e_apis} &>/dev/null
+    gcloud config set project "${PROJECT_ID}" &>/dev/null
+    code=$?
+    if [[ "${code}" != 0 ]]; then
+        echo -e "$(timestamp) ! 프로젝트 ID '${PROJECT_ID}' 조회 불가"
+        exit
+    fi
+
+    e_apis=("drive.googleapis.com") # 필수 APIs
+    pass_apis=("drive.googleapis.com" "driveactivity.googleapis.com") # 삭제 제외 APIs
+    d_apis="" # 불필요 APIs
+    filter="" # 삭제 제외 필터
+    tmp="" # 필수 APIs 단일 라인
+
+    for api in "${e_apis[@]}"; do
+        tmp+="${api} "
+    done
+    e_apis="${tmp:0:-1}"
+
+    for api in "${pass_apis[@]}"; do
+        filter+="NOT config.name=${api} AND "
+    done
+    filter="${filter:0:-5}"
+
+    for api in $(gcloud services list --filter="${filter}" --format="table(NAME)" | sed 1d); do
+        d_apis+="${api} "
+    done
+
+    if [[ "${d_apis}" != "" ]]; then
+        echo -e "$(timestamp) 불필요한 API 사용 중지"
+        while read -r line; do
+            echo -e "$(timestamp) - ${line}"
+        done <<< $(gcloud services list --filter="${filter}" --format="table(TITLE)" | sed 1d)
+        gcloud services disable --force ${d_apis:0:-1} &>/dev/null
+    fi
+
+    echo -e "$(timestamp) 구글 드라이브 API 사용"
+    gcloud services enable ${e_apis} &>/dev/null
 }
 
 create_sa() {
